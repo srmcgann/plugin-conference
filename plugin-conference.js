@@ -261,7 +261,7 @@ kiwi.plugin('conferencePlugin', (kiwi, log) => { /* eslint-disable-line no-undef
         } else {
             roomName = buffer.name;
         }
-        let link = location.protocol + '//' +  kiwi.state.setting('conference.server') + '/' + encodeRoomName(network.connection.server, roomName);
+        let link = location.protocol + '//' +  kiwi.state.setting('conference.server') + '/' + roomName.replace(/#/g, ""); // encodeRoomName(network.connection.server, roomName);
         if (useBitlyLink) {
             let req = `https://api-ssl.bitly.com/v3/shorten?access_token=${bitlyAccessToken}&longUrl=${link}`;
             return await getBitly(req);
@@ -311,8 +311,9 @@ kiwi.plugin('conferencePlugin', (kiwi, log) => { /* eslint-disable-line no-undef
         m.tags['+kiwiirc.com/conference'] = kiwiConferenceTag;
         network.ircClient.raw(m);
 
+        console.log("roomName = " + roomName);
         let options = {
-            roomName: encodeRoomName(network.connection.server, roomName),
+            roomName: roomName.replace(/#/g, ""), //encodeRoomName(network.connection.server, roomName),
             displayName: buffer.name,
             parentNode: jitsiBody,
             interfaceConfigOverwrite,
